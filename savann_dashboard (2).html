@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savann - Sistema de Gestão</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #1a1a2e 0%, #0f3460 100%);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #b8c6db;
+            margin-top: 5px;
+            font-size: 1.1em;
+        }
+
+        .config-section {
+            background: rgba(255, 107, 53, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #f7931e, #ff6b35);
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .expense-item, .investment-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b35;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            color: #b8c6db;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .input-group input::placeholder, .input-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 5px 15px;
+            font-size: 12px;
+            margin: 5px;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .summary-box h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .client-plan {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-ativo { background: #4CAF50; }
+        .status-pausado { background: #FF9800; }
+        .status-cancelado { background: #F44336; }
+
+        .metric {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .metric-label {
+            color: #b8c6db;
+            font-size: 0.9em;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .status-connected {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+
+        .status-disconnected {
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 80%;
+                margin: 5px 0;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Savann</div>
+        <div class="subtitle">Sistema de Gestão - Conectado ao Google Sheets</div>
+    </div>
+
+    <div id="connectionStatus" class="connection-status status-disconnected">
+        🔴 Desconectado
+    </div>
+
+    <!-- Seção de Configuração -->
+    <div class="config-section">
+        <h3>🔧 Configuração Google Sheets</h3>
+        <div class="grid">
+            <div class="input-group">
+                <label>ID da Planilha Google Sheets</label>
+                <input type="text" id="spreadsheetId" placeholder="Cole o ID da sua planilha aqui">
+                <small style="color: #b8c6db;">Extraia da URL: docs.google.com/spreadsheets/d/SEU_ID_AQUI/edit</small>
+            </div>
+            <div class="input-group">
+                <label>Chave da API Google</label>
+                <input type="text" id="apiKey" placeholder="Cole sua API Key aqui">
+                <small style="color: #b8c6db;">Obtida no Google Cloud Console</small>
+            </div>
+            <button class="btn" onclick="conectarGoogleSheets()">🔗 Conectar ao Google Sheets</button>
+            <button class="btn" onclick="carregarDados()">📥 Carregar Dados da Planilha</button>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-button active" onclick="mostrarAba('gastos')">💰 Gastos</button>
+        <button class="tab-button" onclick="mostrarAba('investimentos')">📈 Investimentos</button>
+        <button class="tab-button" onclick="mostrarAba('clientes')">👥 Clientes</button>
+        <button class="tab-button" onclick="mostrarAba('dashboard')">📊 Dashboard</button>
+        <button class="tab-button" onclick="mostrarAba('ajuda')">❓ Ajuda</button>
+    </div>
+
+    <!-- ABA GASTOS -->
+    <div id="gastos" class="tab-content active">
+        <div class="card">
+            <h2>💰 Controle de Gastos</h2>
+            
+            <div class="grid">
+                <div>
+                    <h3>Adicionar Novo Gasto</h3>
+                    <div class="input-group">
+                        <label>Descrição do Gasto</label>
+                        <input type="text" id="gastoDescricao" placeholder="Ex: Licença Adobe Creative Suite">
+                    </div>
+                    <div class="input-group">
+                        <label>Categoria</label>
+                        <select id="gastoCategoria">
+                            <option value="software">Software/Ferramentas</option>
+                            <option value="marketing">Marketing/Publicidade</option>
+                            <option value="pessoal">Pessoal</option>
+                            <option value="operacional">Operacional</option>
+                            <option value="infraestrutura">Infraestrutura</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="gastoValor" placeholder="0,00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Recorrência</label>
+                        <select id="gastoRecorrencia">
+                            <option value="unico">Único</option>
+                            <option value="mensal">Mensal</option>
+                            <option value="anual">Anual</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="adicionarGasto()">Adicionar Gasto</button>
+                    <div id="gastoSucesso" class="success-message">Gasto adicionado e salvo no Google Sheets!</div>
+                    <div id="gastoErro" class="error-message">Erro ao salvar gasto. Verifique a conexão.</div>
+                </div>
+
+                <div>
+                    <h3>Resumo Mensal</h3>
+                    <div class="summary-box">
+                        <h3 id="totalGastos">R$ 0,00</h3>
+                        <p>Total de Gastos do Mês</p>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="metric">
+                            <div class="metric-value" id="gastosSoftware">R$ 0</div>
+                            <div class="metric-label">Software</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="gastosMarketing">R$ 0</div>
+                            <div class="metric-label">Marketing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="listaGastos">
+                <h3>Gastos Registrados</h3>
+                <p style="color: #b8c6db;">Conecte ao Google Sheets para ver os dados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA CLIENTES -->
+    <div id="clientes" class="tab-content">
+        <div class="card">
+            <h2>👥 Planos de Cliente</h2>
+            
+            <div class="grid">
+                <div>
+                    <h3>Novo Cliente</h3>
+                    <div class="input-group">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="clienteNome" placeholder="Nome da empresa/cliente">
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo de Serviço</label>
+                        <select id="clienteServico">
+                            <option value="social-media">Social Media</option>
+                            <option value="google-ads">Google Ads</option>
+                            <option value="facebook-ads">Facebook/Instagram Ads</option>
+                            <option value="branding">Branding</option>
+                            <option value="website">Website/E-commerce</option>
+                            <option value="consultoria">Consultoria</option>
+                            <option value="completo">Pacote Completo</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Valor Mensal (R$)</label>
+                        <input type="number" id="clienteValor" placeholder="0,00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Status</label>
+                        <select id="clienteStatus">
+                            <option value="ativo">Ativo</option>
+                            <option value="pausado">Pausado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Observações</label>
+                        <textarea id="clienteObs" placeholder="Detalhes do projeto, necessidades específicas..." rows="3"></textarea>
+                    </div>
+                    <button class="btn" onclick="adicionarCliente()">Adicionar Cliente</button>
+                    <div id="clienteSucesso" class="success-message">Cliente adicionado e salvo no Google Sheets!</div>
+                    <div id="clienteErro" class="error-message">Erro ao salvar cliente. Verifique a conexão.</div>
+                </div>
+
+                <div>
+                    <h3>Resumo de Clientes</h3>
+                    <div class="summary-box">
+                        <h3 id="receitaMensal">R$ 0,00</h3>
+                        <p>Receita Mensal Total</p>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="metric">
+                            <div class="metric-value" id="clientesAtivos">0</div>
+                            <div class="metric-label">Clientes Ativos</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="ticketMedio">R$ 0</div>
+                            <div class="metric-label">Ticket Médio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="listaClientes">
+                <h3>Clientes Cadastrados</h3>
+                <p style="color: #b8c6db;">Conecte ao Google Sheets para ver os dados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA INVESTIMENTOS -->
+    <div id="investimentos" class="tab-content">
+        <div class="card">
+            <h2>📈 Planejamento de Investimentos</h2>
+            
+            <div class="grid">
+                <div>
+                    <h3>Novo Investimento</h3>
+                    <div class="input-group">
+                        <label>Área de Investimento</label>
+                        <select id="investimentoArea">
+                            <option value="tecnologia">Tecnologia/Software</option>
+                            <option value="equipe">Expansão da Equipe</option>
+                            <option value="marketing">Marketing/Vendas</option>
+                            <option value="infraestrutura">Infraestrutura</option>
+                            <option value="capacitacao">Capacitação</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Descrição</label>
+                        <input type="text" id="investimentoDescricao" placeholder="Ex: Contratar designer senior">
+                    </div>
+                    <div class="input-group">
+                        <label>Valor Estimado (R$)</label>
+                        <input type="number" id="investimentoValor" placeholder="0,00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Prioridade</label>
+                        <select id="investimentoPrioridade">
+                            <option value="alta">Alta</option>
+                            <option value="media">Média</option>
+                            <option value="baixa">Baixa</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>ROI Esperado (%)</label>
+                        <input type="number" id="investimentoROI" placeholder="0" step="1">
+                    </div>
+                    <button class="btn" onclick="adicionarInvestimento()">Adicionar Investimento</button>
+                    <div id="investimentoSucesso" class="success-message">Investimento adicionado e salvo no Google Sheets!</div>
+                    <div id="investimentoErro" class="error-message">Erro ao salvar investimento. Verifique a conexão.</div>
+                </div>
+
+                <div>
+                    <h3>Resumo de Investimentos</h3>
+                    <div class="summary-box">
+                        <h3 id="totalInvestimentos">R$ 0,00</h3>
+                        <p>Total Planejado</p>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="metric">
+                            <div class="metric-value" id="investimentosAlta">0</div>
+                            <div class="metric-label">Alta Prioridade</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="roiMedio">0%</div>
+                            <div class="metric-label">ROI Médio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="listaInvestimentos">
+                <h3>Investimentos Planejados</h3>
+                <p style="color: #b8c6db;">Conecte ao Google Sheets para ver os dados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA DASHBOARD -->
+    <div id="dashboard" class="tab-content">
+        <div class="card">
+            <h2>📊 Dashboard Executivo</h2>
+            
+            <div class="grid">
+                <div class="metric">
+                    <div class="metric-value" id="dashReceita">R$ 0</div>
+                    <div class="metric-label">Receita Mensal</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="dashGastos">R$ 0</div>
+                    <div class="metric-label">Gastos Mensais</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="dashLucro">R$ 0</div>
+                    <div class="metric-label">Lucro Líquido</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="dashMargem">0%</div>
+                    <div class="metric-label">Margem de Lucro</div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <h3>Próximos Investimentos Prioritários</h3>
+                    <div id="proximosInvestimentos">
+                        <p style="color: #b8c6db;">Conecte ao Google Sheets para ver os dados.</p>
+                    </div>
+                </div>
+                <div>
+                    <h3>Alertas e Recomendações</h3>
+                    <div id="alertas">
+                        <div class="expense-item">
+                            <strong>💡 Dica:</strong> Mantenha seus dados sempre atualizados no Google Sheets.
+                        </div>
+                        <div class="expense-item">
+                            <strong>📈 Crescimento:</strong> Use os dados para tomar decisões estratégicas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA AJUDA -->
+    <div id="ajuda" class="tab-content">
+        <div class="card">
+            <h2>❓ Como Configurar Google Sheets</h2>
+            
+            <div style="line-height: 1.8;">
+                <h3>📋 Passo 1: Criar Planilha</h3>
+                <p>1. Acesse <a href="https://sheets.google.com" target="_blank" style="color: #ff6b35;">sheets.google.com</a></p>
+                <p>2. Crie nova planilha: "Savann - Gestão"</p>
+                <p>3. Crie 3 abas: "Gastos", "Clientes", "Investimentos"</p>
+                
+                <h3>🔑 Passo 2: Configurar API</h3>
+                <p>1. Acesse <a href="https://console.cloud.google.com" target="_blank" style="color: #ff6b35;">console.cloud.google.com</a></p>
+                <p>2. Crie projeto: "Savann-Sistema"</p>
+                <p>3. Ative "Google Sheets API"</p>
+                <p>4. Crie "Chave de API"</p>
+                
+                <h3>🔗 Passo 3: Configurar Planilha</h3>
+                <p>1. Compartilhe planilha: "Qualquer pessoa com o link"</p>
+                <p>2. Permissão: "Editor"</p>
+                <p>3. Copie o ID da URL da planilha</p>
+                
+                <h3>📊 Headers das Abas</h3>
+                <div class="expense-item">
+                    <strong>Aba "Gastos":</strong><br>
+                    Data | Descrição | Categoria | Valor | Recorrência
+                </div>
+                <div class="expense-item">
+                    <strong>Aba "Clientes":</strong><br>
+                    Data | Nome | Serviço | Valor | Status | Observações
+                </div>
+                <div class="expense-item">
+                    <strong>Aba "Investimentos":</strong><br>
+                    Data | Área | Descrição | Valor | Prioridade | ROI
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let gastos = [];
+        let investimentos = [];
+        let clientes = [];
+        let spreadsheetId = '';
+        let apiKey = '';
+        let isConnected = false;
+
+        // Funções de configuração
+        function conectarGoogleSheets() {
+            spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+            apiKey = document.getElementById('apiKey').value.trim();
+
+            if (!spreadsheetId || !apiKey) {
+                alert('Por favor, preencha o ID da planilha e a API Key!');
+                return;
+            }
+
+            // Salvar configurações
+            //localStorage.setItem('savann_spreadsheetId', spreadsheetId);
+            //localStorage.setItem('savann_apiKey', apiKey);
+
+            // Testar conexão
+            testarConexao();
+        }
+
+        async function testarConexao() {
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?key=${apiKey}`;
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    isConnected = true;
+                    atualizarStatusConexao(true);
+                    alert('✅ Conectado com sucesso ao Google Sheets!');
+                    carregarDados();
+                } else {
+                    throw new Error('Falha na conexão');
+                }
+            } catch (error) {
+                isConnected = false;
+                atualizarStatusConexao(false);
+                alert('❌ Erro na conexão. Verifique ID da planilha e API Key.');
+            }
+        }
+
+        function atualizarStatusConexao(conectado) {
+            const status = document.getElementById('connectionStatus');
+            if (conectado) {
+                status.textContent = '🟢 Conectado';
+                status.className = 'connection-status status-connected';
+            } else {
+                status.textContent = '🔴 Desconectado';
+                status.className = 'connection-status status-disconnected';
+            }
+        }
+
+        async function carregarDados() {
+            if (!isConnected) {
+                alert('Conecte ao Google Sheets primeiro!');
+                return;
+            }
+
+            try {
+                // Carregar gastos
+                await carregarGastos();
+                // Carregar clientes
+                await carregarClientes();
+                // Carregar investimentos
+                await carregarInvestimentos();
+                
+                alert('✅ Dados carregados com sucesso!');
+            } catch (error) {
+                alert('❌ Erro ao carregar dados da planilha.');
+            }
+        }
+
+        async function carregarGastos() {
+            const range = 'Gastos!A2:E1000';
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.values) {
+                    gastos = data.values.map((row, index) => ({
+                        id: index,
+                        data: row[0] || '',
+                        descricao: row[1] || '',
+                        categoria: row[2] || '',
+                        valor: parseFloat(row[3]) || 0,
+                        recorrencia: row[4] || ''
+                    })).filter(gasto => gasto.descricao);
+                    
+                    atualizarListaGastos();
+                    atualizarResumoGastos();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar gastos:', error);
+            }
+        }
+
+        async function carregarClientes() {
+            const range = 'Clientes!A2:F1000';
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.values) {
+                    clientes = data.values.map((row, index) => ({
+                        id: index,
+                        data: row[0] || '',
+                        nome: row[1] || '',
+                        servico: row[2] || '',
+                        valor: parseFloat(row[3]) || 0,
+                        status: row[4] || '',
+                        obs: row[5] || ''
+                    })).filter(cliente => cliente.nome);
+                    
+                    atualizarListaClientes();
+                    atualizarResumoClientes();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+            }
+        }
+
+        async function carregarInvestimentos() {
+            const range = 'Investimentos!A2:F1000';
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.values) {
+                    investimentos = data.values.map((row, index) => ({
+                        id: index,
+                        data: row[0] || '',
+                        area: row[1] || '',
+                        descricao: row[2] || '',
+                        valor: parseFloat(row[3]) || 0,
+                        prioridade: row[4] || '',
+                        roi: parseInt(row[5]) || 0
+                    })).filter(inv => inv.descricao);
+                    
+                    atualizarListaInvestimentos();
+                    atualizarResumoInvestimentos();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar investimentos:', error);
+            }
+        }
+
+        async function salvarNoSheets(aba, dados) {
+            if (!isConnected) {
+                return false;
+            }
+
+            const range = `${aba}!A:F`;
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        values: [dados]
+                    })
+                });
+                
+                return response.ok;
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                return false;
+            }
+        }
+
+        // Função para mostrar mensagem
+        function mostrarMensagem(tipo, elementId) {
+            const elemento = document.getElementById(elementId);
+            elemento.style.display = 'block';
+            setTimeout(() => {
+                elemento.style.display = 'none';
+            }, 3000);
+        }
+
+        // Função para alternar abas
+        function mostrarAba(nomeAba) {
+            const abas = document.querySelectorAll('.tab-content');
+            abas.forEach(aba => aba.classList.remove('active'));
+            
+            const botoes = document.querySelectorAll('.tab-button');
+            botoes.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(nomeAba).classList.add('active');
+            
+            const botoesArray = Array.from(botoes);
+            const botaoClicado = botoesArray.find(btn => btn.textContent.includes({
+                'gastos': 'Gastos',
+                'investimentos': 'Investimentos', 
+                'clientes': 'Clientes',
+                'dashboard': 'Dashboard',
+                'ajuda': 'Ajuda'
+            }[nomeAba]));
+            
+            if (botaoClicado) {
+                botaoClicado.classList.add('active');
+            }
+            
+            if (nomeAba === 'dashboard') {
+                atualizarDashboard();
+            }
+        }
+
+        // FUNÇÕES DE GASTOS
+        async function adicionarGasto() {
+            const descricao = document.getElementById('gastoDescricao').value.trim();
+            const categoria = document.getElementById('gastoCategoria').value;
+            const valor = parseFloat(document.getElementById('gastoValor').value);
+            const recorrencia = document.getElementById('gastoRecorrencia').value;
+
+            if (!descricao || !valor || valor <= 0) {
+                alert('Por favor, preencha a descrição e um valor válido!');
+                return;
+            }
+
+            const data = new Date().toLocaleDateString('pt-BR');
+            const dadosGasto = [data, descricao, categoria, valor, recorrencia];
+
+            // Salvar no Google Sheets
+            const salvou = await salvarNoSheets('Gastos', dadosGasto);
+            
+            if (salvou) {
+                // Adicionar aos dados locais
+                const gasto = {
+                    id: Date.now(),
+                    data: data,
+                    descricao: descricao,
+                    categoria: categoria,
+                    valor: valor,
+                    recorrencia: recorrencia
+                };
+
+                gastos.push(gasto);
+                atualizarListaGastos();
+                atualizarResumoGastos();
+                limparFormularioGasto();
+                mostrarMensagem('sucesso', 'gastoSucesso');
+            } else {
+                mostrarMensagem('erro', 'gastoErro');
+            }
+        }
+
+        async function adicionarCliente() {
+            const nome = document.getElementById('clienteNome').value.trim();
+            const servico = document.getElementById('clienteServico').value;
+            const valor = parseFloat(document.getElementById('clienteValor').value);
+            const status = document.getElementById('clienteStatus').value;
+            const obs = document.getElementById('clienteObs').value.trim();
+
+            if (!nome || !valor || valor <= 0) {
+                alert('Por favor, preencha o nome e um valor válido!');
+                return;
+            }
+
+            const data = new Date().toLocaleDateString('pt-BR');
+            const dadosCliente = [data, nome, servico, valor, status, obs];
+
+            const salvou = await salvarNoSheets('Clientes', dadosCliente);
+            
+            if (salvou) {
+                const cliente = {
+                    id: Date.now(),
+                    data: data,
+                    nome: nome,
+                    servico: servico,
+                    valor: valor,
+                    status: status,
+                    obs: obs
+                };
+
+                clientes.push(cliente);
+                atualizarListaClientes();
+                atualizarResumoClientes();
+                limparFormularioCliente();
+                mostrarMensagem('sucesso', 'clienteSucesso');
+            } else {
+                mostrarMensagem('erro', 'clienteErro');
+            }
+        }
+
+        async function adicionarInvestimento() {
+            const area = document.getElementById('investimentoArea').value;
+            const descricao = document.getElementById('investimentoDescricao').value.trim();
+            const valor = parseFloat(document.getElementById('investimentoValor').value);
+            const prioridade = document.getElementById('investimentoPrioridade').value;
+            const roi = parseInt(document.getElementById('investimentoROI').value) || 0;
+
+            if (!descricao || !valor || valor <= 0) {
+                alert('Por favor, preencha a descrição e um valor válido!');
+                return;
+            }
+
+            const data = new Date().toLocaleDateString('pt-BR');
+            const dadosInvestimento = [data, area, descricao, valor, prioridade, roi];
+
+            const salvou = await salvarNoSheets('Investimentos', dadosInvestimento);
+            
+            if (salvou) {
+                const investimento = {
+                    id: Date.now(),
+                    data: data,
+                    area: area,
+                    descricao: descricao,
+                    valor: valor,
+                    prioridade: prioridade,
+                    roi: roi
+                };
+
+                investimentos.push(investimento);
+                atualizarListaInvestimentos();
+                atualizarResumoInvestimentos();
+                limparFormularioInvestimento();
+                mostrarMensagem('sucesso', 'investimentoSucesso');
+            } else {
+                mostrarMensagem('erro', 'investimentoErro');
+            }
+        }
+
+        // Funções de atualização da interface
+        function atualizarListaGastos() {
+            const lista = document.getElementById('listaGastos');
+            
+            if (gastos.length === 0) {
+                lista.innerHTML = '<h3>Gastos Registrados</h3><p style="color: #b8c6db;">Nenhum gasto cadastrado ainda.</p>';
+                return;
+            }
+            
+            let html = '<h3>Gastos Registrados</h3>';
+            
+            gastos.forEach(gasto => {
+                html += `
+                    <div class="expense-item">
+                        <strong>${gasto.descricao}</strong><br>
+                        <span>Categoria: ${gasto.categoria} | Valor: R$ ${gasto.valor.toFixed(2)} | ${gasto.recorrencia}</span><br>
+                        <small>Data: ${gasto.data}</small>
+                    </div>
+                `;
+            });
+            
+            lista.innerHTML = html;
+        }
+
+        function atualizarResumoGastos() {
+            const total = gastos.reduce((acc, gasto) => acc + gasto.valor, 0);
+            document.getElementById('totalGastos').textContent = `R$ ${total.toFixed(2)}`;
+            
+            const software = gastos.filter(g => g.categoria === 'software').reduce((acc, g) => acc + g.valor, 0);
+            const marketing = gastos.filter(g => g.categoria === 'marketing').reduce((acc, g) => acc + g.valor, 0);
+            
+            document.getElementById('gastosSoftware').textContent = `R$ ${software.toFixed(0)}`;
+            document.getElementById('gastosMarketing').textContent = `R$ ${marketing.toFixed(0)}`;
+        }
+
+        function atualizarListaClientes() {
+            const lista = document.getElementById('listaClientes');
+            
+            if (clientes.length === 0) {
+                lista.innerHTML = '<h3>Clientes Cadastrados</h3><p style="color: #b8c6db;">Nenhum cliente cadastrado ainda.</p>';
+                return;
+            }
+            
+            let html = '<h3>Clientes Cadastrados</h3>';
+            
+            clientes.forEach(cliente => {
+                html += `
+                    <div class="client-plan">
+                        <strong style="font-size: 1.2em;">${cliente.nome}</strong><br>
+                        <span>Serviço: ${cliente.servico} | Valor: R$ ${cliente.valor.toFixed(2)}/mês</span><br>
+                        <span><span class="status-indicator status-${cliente.status}"></span>Status: ${cliente.status.toUpperCase()}</span><br>
+                        ${cliente.obs ? `<small style="color: #b8c6db;">Obs: ${cliente.obs}</small><br>` : ''}
+                        <small>Data: ${cliente.data}</small>
+                    </div>
+                `;
+            });
+            
+            lista.innerHTML = html;
+        }
+
+        function atualizarResumoClientes() {
+            const clientesAtivos = clientes.filter(c => c.status === 'ativo');
+            const receita = clientesAtivos.reduce((acc, c) => acc + c.valor, 0);
+            const ticketMedio = clientesAtivos.length > 0 ? receita / clientesAtivos.length : 0;
+            
+            document.getElementById('receitaMensal').textContent = `R$ ${receita.toFixed(2)}`;
+            document.getElementById('clientesAtivos').textContent = clientesAtivos.length;
+            document.getElementById('ticketMedio').textContent = `R$ ${ticketMedio.toFixed(0)}`;
+        }
+
+        function atualizarListaInvestimentos() {
+            const lista = document.getElementById('listaInvestimentos');
+            
+            if (investimentos.length === 0) {
+                lista.innerHTML = '<h3>Investimentos Planejados</h3><p style="color: #b8c6db;">Nenhum investimento cadastrado ainda.</p>';
+                return;
+            }
+            
+            let html = '<h3>Investimentos Planejados</h3>';
+            
+            investimentos.forEach(inv => {
+                const prioridadeColor = inv.prioridade === 'alta' ? '#ff6b35' : inv.prioridade === 'media' ? '#f7931e' : '#4CAF50';
+                html += `
+                    <div class="investment-item" style="border-left-color: ${prioridadeColor};">
+                        <strong>${inv.descricao}</strong><br>
+                        <span>Área: ${inv.area} | Valor: R$ ${inv.valor.toFixed(2)} | ROI: ${inv.roi}%</span><br>
+                        <span style="color: ${prioridadeColor};">Prioridade: ${inv.prioridade.toUpperCase()}</span><br>
+                        <small>Data: ${inv.data}</small>
+                    </div>
+                `;
+            });
+            
+            lista.innerHTML = html;
+        }
+
+        function atualizarResumoInvestimentos() {
+            const total = investimentos.reduce((acc, inv) => acc + inv.valor, 0);
+            document.getElementById('totalInvestimentos').textContent = `R$ ${total.toFixed(2)}`;
+            
+            const alta = investimentos.filter(i => i.prioridade === 'alta').length;
+            const roiMedio = investimentos.length > 0 ? 
+                investimentos.reduce((acc, i) => acc + i.roi, 0) / investimentos.length : 0;
+            
+            document.getElementById('investimentosAlta').textContent = alta;
+            document.getElementById('roiMedio').textContent = `${roiMedio.toFixed(0)}%`;
+        }
+
+        function atualizarDashboard() {
+            const clientesAtivos = clientes.filter(c => c.status === 'ativo');
+            const receita = clientesAtivos.reduce((acc, c) => acc + c.valor, 0);
+            const gastosMensais = gastos.reduce((acc, g) => acc + g.valor, 0);
+            const lucro = receita - gastosMensais;
+            const margem = receita > 0 ? (lucro / receita) * 100 : 0;
+
+            document.getElementById('dashReceita').textContent = `R$ ${receita.toFixed(0)}`;
+            document.getElementById('dashGastos').textContent = `R$ ${gastosMensais.toFixed(0)}`;
+            document.getElementById('dashLucro').textContent = `R$ ${lucro.toFixed(0)}`;
+            document.getElementById('dashMargem').textContent = `${margem.toFixed(1)}%`;
+
+            const investimentosAlta = investimentos
+                .filter(i => i.prioridade === 'alta')
+                .sort((a, b) => b.roi - a.roi)
+                .slice(0, 3);
+
+            let htmlInv = '';
+            investimentosAlta.forEach(inv => {
+                htmlInv += `
+                    <div class="expense-item">
+                        <strong>${inv.descricao}</strong><br>
+                        <span>R$ ${inv.valor.toFixed(2)} | ROI: ${inv.roi}%</span>
+                    </div>
+                `;
+            });
+            
+            if (htmlInv === '') {
+                htmlInv = '<p style="color: #b8c6db;">Conecte ao Google Sheets para ver os dados.</p>';
+            }
+
+            document.getElementById('proximosInvestimentos').innerHTML = htmlInv;
+        }
+
+        function limparFormularioGasto() {
+            document.getElementById('gastoDescricao').value = '';
+            document.getElementById('gastoValor').value = '';
+        }
+
+        function limparFormularioCliente() {
+            document.getElementById('clienteNome').value = '';
+            document.getElementById('clienteValor').value = '';
+            document.getElementById('clienteObs').value = '';
+        }
+
+        function limparFormularioInvestimento() {
+            document.getElementById('investimentoDescricao').value = '';
+            document.getElementById('investimentoValor').value = '';
+            document.getElementById('investimentoROI').value = '';
+        }
+
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sistema Savann com Google Sheets carregado!');
+            atualizarStatusConexao(false);
+            
+            // Carregar configurações salvas
+            //const savedSpreadsheetId = localStorage.getItem('savann_spreadsheetId');
+            //const savedApiKey = localStorage.getItem('savann_apiKey');
+            
+            //if (savedSpreadsheetId) document.getElementById('spreadsheetId').value = savedSpreadsheetId;
+            //if (savedApiKey) document.getElementById('apiKey').value = savedApiKey;
+        });
+    </script>
+</body>
+</html>
