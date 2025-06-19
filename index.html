@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://apis.google.com/js/api.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=initClient" async defer></script>
     <title>Savann - Sistema de Gestão</title>
     <style>
         * {
@@ -10,6 +12,26 @@
             padding: 0;
             box-sizing: border-box;
         }
+<script>
+  function initClient() {
+    gapi.load('client:auth2', function () {
+      gapi.client.init({
+        apiKey: 'AIzaSyC9SAUqWozbL-DQcYgS92MnzQcfrtTB2pI',
+        clientId: '100762703811-olhq6oq8g6ictgc72734o83o340e42id.apps.googleusercontent.com',
+        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+        scope: "https://www.googleapis.com/auth/spreadsheets"
+      }).then(function () {
+        console.log('Google API inicializada');
+      });
+    });
+  }
+  function handleAuthClick() {
+    gapi.auth2.getAuthInstance().signIn().then(function () {
+      console.log('Usuário autenticado!');
+      alert('✅ Usuário autenticado com sucesso!');
+    });
+  }
+</script>
 
         body {
             font-family: 'Arial', sans-serif;
@@ -46,6 +68,9 @@
             margin: 20px;
             border: 1px solid rgba(255, 107, 53, 0.3);
         }
+<div style="text-align: center; margin-top: 20px;">
+  <button class="btn" onclick="handleAuthClick()">🔐 Login com Google</button>
+</div>
 
         .nav-tabs {
             display: flex;
